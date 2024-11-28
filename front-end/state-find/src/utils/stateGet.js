@@ -5,7 +5,7 @@ export async function loadStates() {
             throw new Error(`Response status: ${response.status}`);
         }
         const estados = await response.json();
-        return estados.map((estado) => estado.nome);
+        return estados;
 
     } catch (error) {
         console.log(error);
