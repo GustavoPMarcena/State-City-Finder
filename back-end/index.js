@@ -1,22 +1,16 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import pg from 'pg';
+import bodyParser from 'body-parser';
+import router from './src/routes/mapRoute.js';
+import cors from 'cors';
+
 dotenv.config();
-
 const app = express();
-const port = 3000;
-const { Client } = pg;
-const client = new Client({
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    host: process.env.POSTGRES_HOST,
-    port: process.env.POSTGRES_PORT,
-    database: process.env.POSTGRES_DB
-});
+const port = process.env.PORT || 5000;
 
-app.get('/svg', (req, res)=> {
-    res.send('Hello');
-});
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/api/map/', router);
 
 app.listen(port, ()=> {
     console.log("Server rodando na porta ");

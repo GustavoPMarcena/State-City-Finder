@@ -28,8 +28,8 @@ function App() {
 
   function handleSubmit(e){
     e.preventDefault();
-    const cidadeEncontrada = cities.find(obj => obj.id == selectedCity);
-    const estadoEncontrado = states.find(obj => obj.id == selectedState);
+    const cidadeEncontrada = cities.find(obj => obj.id === selectedCity);
+    const estadoEncontrado = states.find(obj => obj.id === selectedState);
 
     console.log(cidadeEncontrada, estadoEncontrado);
     
