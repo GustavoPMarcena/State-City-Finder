@@ -1,11 +1,12 @@
 import sequelize from "../config/db.js";
 
 const getSVGMap = async (req, res) => {
-    const cidade = req.body.cidade;
-    const estado = req.body.estado;
+    console.log(req.params);
+    const cidade = req.query.cidade;
+    const estado = req.query.estado;
     console.log(cidade, estado);
     try {
-        
+
         let pathEstado = await sequelize.query(`SELECT ST_AsSVG(geom) FROM estados WHERE nome ILIKE '${estado}'`, {
             replacements: [estado],  
             type: sequelize.QueryTypes.SELECT
@@ -16,7 +17,7 @@ const getSVGMap = async (req, res) => {
              type: sequelize.QueryTypes.SELECT
          });
 
-        let viewBox = await sequelize.query(`SELECT getViewBox('${cidade}')`, {
+        let viewBox = await sequelize.query(`SELECT getViewBox('${estado}')`, {
              replacements: [cidade], 
              type: sequelize.QueryTypes.SELECT
         });

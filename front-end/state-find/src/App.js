@@ -4,16 +4,18 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import { loadStates } from './utils/stateGet';
 import { loadCities } from './utils/cityGet';
+import { loadSvg } from './utils/getSVG';
 
 function App() {
   const [states, setStates] = useState({});
   const [cities, setCities] = useState({});
   const [selectedState, setSelectedState] = useState();
   const [selectedCity, setSelectedCity] = useState();
+  const [svg, setSvg] = useState({});
 
   const handleStateChange = (event) => {
     setSelectedState(event.target.value);
-    if(event.target.value !== "-") {
+    if (event.target.value !== "-") {
       getCities(event.target.value);
     } else {
       setCities({});
@@ -21,18 +23,24 @@ function App() {
   };
 
   const handleCityChange = (event) => {
-    if(event.target.value !== "-") {
+    if (event.target.value !== "-") {
       setSelectedCity(event.target.value);
-    } 
+    }
   };
 
-  function handleSubmit(e){
-    e.preventDefault();
-    const cidadeEncontrada = cities.find(obj => obj.id === selectedCity);
-    const estadoEncontrado = states.find(obj => obj.id === selectedState);
+  async function handleSubmit(e) {
 
-    console.log(cidadeEncontrada, estadoEncontrado);
-    
+    e.preventDefault();
+    if (selectedCity && selectedState && selectedCity !== '-' && selectedState !== '-') {
+      const cidadeEncontrada = cities.find(obj => obj.id == selectedCity);
+      const estadoEncontrado = states.find(obj => obj.id == selectedState);
+      console.log(cidadeEncontrada.nome, estadoEncontrado.nome);
+      await getSVG(cidadeEncontrada.nome, estadoEncontrado.nome);
+      console.log(svg);
+
+    }
+
+
   }
 
   async function getStates() {
@@ -55,9 +63,20 @@ function App() {
     }
   }
 
+  async function getSVG(city, state) {
+    try {
+      const data = await loadSvg(city, state);
+      setSvg(data);
+    } catch (error) {
+      console.error("Erro:", error);
+    }
+  }
+
   useEffect(() => {
     getStates();
   }, []);
+
+
 
   return (
     <div className="App">
@@ -78,7 +97,7 @@ function App() {
                   {state.nome}
                 </option>
               ))}
-              
+
 
             </Form.Select>
 
@@ -99,6 +118,28 @@ function App() {
               Buscar
             </Button>
           </Form>
+          <br/>
+          {svg && (
+            <div>
+
+              <svg
+                viewBox={svg.viewBox}
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <path
+                  d={svg.pathestado}
+                  fill="white"
+                  stroke="black"
+                  strokeWidth="0.01"
+                />
+                <path
+                  d={svg.pathmunicipio}
+                  fill="black"
+                  stroke="none"
+                />
+              </svg>
+            </div>
+          )}
         </div>
       </main>
     </div>
